@@ -1,12 +1,24 @@
 // Icon files
 $icon-airplay--default: 'images/ic_airplay_white_24px.svg' !default;
 $icon-airplay--hover: 'images/ic_airplay_white_24px.svg' !default;
+$icon-airplay-active--default: 'images/ic_airplay_blue_24px.svg' !default;
+$icon-airplay-active--hover: 'images/ic_airplay_blue_24px.svg' !default;
 
 // Sizes
 $airplay-icon-size: 12px !default;
 $airplay-button-spacing: 4px !default;
 
 .vjs-airplay-button {
+   &.active {
+      .vjs-icon-placeholder {
+         background: url($icon-airplay-active--default) center center no-repeat;
+      }
+      &:hover {
+         .vjs-icon-placeholder {
+            background-image: url($icon-airplay-active--hover);
+         }
+      }
+   }
    .vjs-icon-placeholder {
       background: url($icon-airplay--default) center center no-repeat;
       background-size: contain;

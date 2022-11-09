@@ -45,7 +45,7 @@ AirPlayButton = {
 
          this.el().appendChild(this._labelEl);
       } else {
-         this.controlText('Start AirPlay');
+         this.controlText('AirPlay');
       }
    },
 
@@ -108,9 +108,23 @@ AirPlayButton = {
          }
       }
 
+      function onTargetIsWirelessChanged(event) {
+        self._airplaying = !self._airplaying
+        if (self._airplaying) {
+          self.controlText('AirPlaying', self.el());
+          self.el().classList.add('active');
+          self.player().trigger('startAirPlay');
+        } else {
+          self.controlText('AirPlay', self.el());
+          self.el().classList.remove('active')
+          self.player().trigger('stopAirPlay');
+        }
+      }
       mediaEl.addEventListener('webkitplaybacktargetavailabilitychanged', onTargetAvailabilityChanged);
+      mediaEl.addEventListener('webkitcurrentplaybacktargetiswirelesschanged', onTargetIsWirelessChanged)
       this.on('dispose', function() {
          mediaEl.removeEventListener('webkitplaybacktargetavailabilitychanged', onTargetAvailabilityChanged);
+         mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', onTargetIsWirelessChanged);
       });
    },
 };
