@@ -6,8 +6,8 @@
 
 var path = require('path'),
     getCodeVersion = require('silvermine-serverless-utils/src/get-code-version'),
-    sass = require('sass'),
-    join = path.join.bind(path);
+    join = path.join.bind(path),
+    sass = require('sass');
 
 module.exports = function(grunt) {
 
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
    config = {
       js: {
          all: [ 'Gruntfile.js', 'src/**/*.js', 'tests/**/*.js' ],
-         standalone: join(__dirname, 'src', 'js', 'standalone.js'),
+         browserMainFile: join('src', 'js', 'standalone.js'),
       },
 
       sass: {
@@ -70,9 +70,29 @@ module.exports = function(grunt) {
       },
 
       browserify: {
-         standalone: {
-            src: config.js.standalone,
+         main: {
+            src: config.js.browserMainFile,
             dest: config.dist.js.bundle,
+            options: {
+               transform: [
+                  [
+                     'babelify',
+                     {
+                        presets: [
+                           [
+                              '@babel/preset-env',
+                              {
+                                 debug: true,
+                                 useBuiltIns: 'usage',
+                                 shippedProposals: true,
+                                 corejs: 3,
+                              },
+                           ],
+                        ],
+                     },
+                  ],
+               ],
+            },
          },
       },
 
@@ -85,9 +105,12 @@ module.exports = function(grunt) {
                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> <%= versionInfo %> */\n',
                sourceMap: DEBUG,
                sourceMapIncludeSources: DEBUG,
-               mangle: DEBUG,
-               compress: DEBUG,
-               beautify: !DEBUG,
+               mangle: !DEBUG,
+               // Disable the `merge_vars` option in the compression phase.
+               // `merge_vars` aggressively reuses variable names, which can lead to
+               // unexpected behavior or runtime errors in certain cases.
+               compress: DEBUG ? false : { merge_vars: false }, // eslint-disable-line camelcase
+               beautify: DEBUG,
             },
          },
       },
@@ -116,7 +139,7 @@ module.exports = function(grunt) {
          options: {
             map: DEBUG,
             processors: [
-               require('autoprefixer')({ browsers: '> .05%' }), // eslint-disable-line global-require
+               require('autoprefixer')(), // eslint-disable-line global-require
             ],
          },
          styles: {
