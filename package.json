@@ -8,7 +8,6 @@
     "test": "nyc mocha -- 'tests/**/*.test.js'",
     "build": "grunt build",
     "build:debug": "grunt build --debug",
-    "prepublish": "npm run build",
     "commitlint": "commitlint --from a9277dd",
     "markdownlint": "markdownlint-cli2",
     "eslint": "eslint '{,!(node_modules|dist)/**/}*.js'",
